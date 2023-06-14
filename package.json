@@ -16,7 +16,11 @@
   "name": "crowd-funding",
   "packageManager": "yarn@1.22.19",
   "workspaces": [
-    "apps/*",
+    "apps/contract",
+    "apps/app",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.9.1"
+  }
 }
