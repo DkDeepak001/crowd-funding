@@ -33,9 +33,21 @@ contract Funding {
         campaignCount++;
     }
         
-        function getCampaing(uint _campaignCount) external view returns(Campaign memory){
-            return campaigns[_campaignCount];
+        function getCampaing(uint campaingId) external view returns(Campaign memory){
+            return campaigns[campaingId];
         }
-    
+
+
+        function donate(uint campaingId) external payable {
+            require(msg.value >= 0,"you need to donate atleast 1 token");
+            require(campaigns[campaingId].deadline >= block.timestamp,"Campaign has been closed");
+
+            Campaign storage campaign = campaigns[campaingId];
+
+            campaign.recievedAmount += msg.value;
+            campaign.donorAddresses.push(msg.sender);
+            campaign.donationAmounts.push(msg.value);
+        }
+
 
 }
