@@ -51,12 +51,12 @@ contract Funding {
         campaignCount++;
     }
         
-        function getCampaing(uint campaingId) external view returns(Campaign memory){
+        function getCampaign(uint campaingId) external view returns(Campaign memory){
             return campaigns[campaingId];
         }
 
 
-    function donate(uint campaignId, uint amount) external {
+    function donate(uint campaignId, uint amount) external payable{
         require(amount > 0, "Donation amount must be greater than 0");
         require(campaigns[campaignId].deadline >= block.timestamp, "Campaign has been closed");
 
@@ -69,6 +69,7 @@ contract Funding {
         campaign.donorAddresses.push(msg.sender);
         campaign.donationAmounts.push(amount);
     }
+
 
 
 }
