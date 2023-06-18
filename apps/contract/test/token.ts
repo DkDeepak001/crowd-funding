@@ -4,9 +4,7 @@ import { Contract } from "ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 describe("ERC20Token", function () {
-  let totalSupply = 1000;
   let token: Contract;
-  let staking: Contract;
   let owner: SignerWithAddress;
   let addr1: SignerWithAddress;
   let addr2: SignerWithAddress;
