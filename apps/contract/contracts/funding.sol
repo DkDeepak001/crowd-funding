@@ -70,6 +70,13 @@ contract Funding {
         campaign.donationAmounts.push(amount);
     }
 
+    function withdrawl (uint campaignId) external payable{
+        require(campaigns[campaignId].deadline < block.timestamp, "Campaign has not been closed yet");
+        require(campaigns[campaignId].owner == msg.sender, "Only the owner can withdraw the funds");
+        tokenAddress.allowance(address(this), msg.sender);
+        tokenAddress.transfer(msg.sender, campaigns[campaignId].recievedAmount);
+    }
+
 
 
 }

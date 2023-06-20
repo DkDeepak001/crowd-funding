@@ -19,10 +19,10 @@ describe("Funding", function () {
     token.mint(addr1.address, 100);
     const tokenAddress = token.address;
 
-    // Create a different token contract
-    const differentToken = await ethers.getContractFactory("DifferentToken");
-    differentTokenContract = await differentToken.deploy();
-    await differentTokenContract.mint(addr1.address, 199);
+    // // Create a different token contract
+    // const differentToken = await ethers.getContractFactory("DifferentToken");
+    // differentTokenContract = await differentToken.deploy();
+    // await differentTokenContract.mint(addr1.address, 199);
 
     const FundingToken = await ethers.getContractFactory("Funding");
     funding = await FundingToken.deploy(tokenAddress);
@@ -109,4 +109,38 @@ describe("Funding", function () {
     expect(adress1Balance).to.equal(80);
     expect(address2Balance).to.equal(70);
   });
+
+  //  ALREADY PASSED TEST COMMENTED BECAUSE DEADLINE IS HARD CODED TO 30 DAYS IN THE CONTRACT
+  // it("should not donate to a campaign if the deadline has passed", async function () {
+  //   const campaignTitle = "New Campaign";
+  //   const campaignDescription = "Campaign Description";
+  //   const campaignTarget = 100;
+  //   const campaignImage = "image.png";
+
+  //   // Create a new campaign
+  //   await funding.createCampaing(
+  //     campaignTitle,
+  //     campaignDescription,
+  //     campaignTarget,
+  //     campaignImage
+  //   );
+
+  //   // Get the campaign details
+  //   const campaign = await funding.getCampaign(0);
+
+  //   // Verify the campaign details
+  //   expect(campaign.owner).to.equal(owner.address);
+  //   expect(campaign.title).to.equal(campaignTitle);
+  //   expect(campaign.description).to.equal(campaignDescription);
+  //   expect(campaign.target).to.equal(campaignTarget);
+  //   // expect(campaign.deadline).to.be.gt(0);
+  //   expect(campaign.image).to.equal(campaignImage);
+  //   expect(campaign.recievedAmount).to.equal(0);
+  //   expect(campaign.donorAddresses.length).to.equal(0);
+  //   expect(campaign.donationAmounts.length).to.equal(0);
+
+  //   // Try to donate to the campaign
+  //   await token.connect(addr1).approve(funding.address, campaignTarget);
+  //   await expect(funding.connect(addr1).donate(0, 20)).to.be.reverted;
+  // });
 });
