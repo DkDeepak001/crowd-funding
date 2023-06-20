@@ -111,39 +111,41 @@ describe("Funding", function () {
     expect(address2Balance).to.equal(70);
   });
 
-  //  ALREADY PASSED TEST COMMENTED BECAUSE DEADLINE IS HARD CODED TO 30 DAYS IN THE CONTRACT
-  // it("should not donate to a campaign if the deadline has passed", async function () {
-  //   const campaignTitle = "New Campaign";
-  //   const campaignDescription = "Campaign Description";
-  //   const campaignTarget = 100;
-  //   const campaignImage = "image.png";
+  it("should not donate to a campaign if the deadline has passed", async function () {
+    const campaignTitle = "New Campaign";
+    const campaignDescription = "Campaign Description";
+    const campaignTarget = 100;
+    const campaignImage = "image.png";
 
-  //   // Create a new campaign
-  //   await funding.createCampaing(
-  //     campaignTitle,
-  //     campaignDescription,
-  //     campaignTarget,
-  //     campaignImage
-  //   );
+    // Create a new campaign
+    await funding.createCampaing(
+      campaignTitle,
+      campaignDescription,
+      campaignTarget,
+      campaignImage
+    );
 
-  //   // Get the campaign details
-  //   const campaign = await funding.getCampaign(0);
+    // Get the campaign details
+    const campaign = await funding.getCampaign(0);
 
-  //   // Verify the campaign details
-  //   expect(campaign.owner).to.equal(owner.address);
-  //   expect(campaign.title).to.equal(campaignTitle);
-  //   expect(campaign.description).to.equal(campaignDescription);
-  //   expect(campaign.target).to.equal(campaignTarget);
-  //   // expect(campaign.deadline).to.be.gt(0);
-  //   expect(campaign.image).to.equal(campaignImage);
-  //   expect(campaign.recievedAmount).to.equal(0);
-  //   expect(campaign.donorAddresses.length).to.equal(0);
-  //   expect(campaign.donationAmounts.length).to.equal(0);
+    // Verify the campaign details
+    expect(campaign.owner).to.equal(owner.address);
+    expect(campaign.title).to.equal(campaignTitle);
+    expect(campaign.description).to.equal(campaignDescription);
+    expect(campaign.target).to.equal(campaignTarget);
+    // expect(campaign.deadline).to.be.gt(0);
+    expect(campaign.image).to.equal(campaignImage);
+    expect(campaign.recievedAmount).to.equal(0);
+    expect(campaign.donorAddresses.length).to.equal(0);
+    expect(campaign.donationAmounts.length).to.equal(0);
+    //setTimeOut for 30 days
+    await ethers.provider.send("evm_increaseTime", [2592000]);
+    await ethers.provider.send("evm_mine");
 
-  //   // Try to donate to the campaign
-  //   await token.connect(addr1).approve(funding.address, campaignTarget);
-  //   await expect(funding.connect(addr1).donate(0, 20)).to.be.reverted;
-  // });
+    // Try to donate to the campaign
+    await token.connect(addr1).approve(funding.address, campaignTarget);
+    await expect(funding.connect(addr1).donate(0, 20)).to.be.reverted;
+  });
 
   it("should not donate to a campaign if the target has been reached", async function () {
     const campaignTitle = "New Campaign";
@@ -180,8 +182,142 @@ describe("Funding", function () {
     await token.connect(addr2).approve(funding.address, campaignTarget);
     await funding.connect(addr2).donate(0, 10);
 
+    //setTimeOut for 30 days
+    await ethers.provider.send("evm_increaseTime", [2596000]);
+    await ethers.provider.send("evm_mine");
+
     // Try to donate to the campaign
     await token.connect(addr2).approve(funding.address, campaignTarget);
     await expect(funding.connect(addr2).donate(0, 20)).to.be.reverted;
+  });
+
+  it("should withdraw the funds ", async function () {
+    const campaignTitle = "New Campaign";
+    const campaignDescription = "Campaign Description";
+    const campaignTarget = 100;
+    const campaignImage = "image.png";
+
+    // Create a new campaign
+    await funding.createCampaing(
+      campaignTitle,
+      campaignDescription,
+      campaignTarget,
+      campaignImage
+    );
+
+    // Get the campaign details
+    const campaign = await funding.getCampaign(0);
+
+    // Verify the campaign details
+    expect(campaign.owner).to.equal(owner.address);
+    expect(campaign.title).to.equal(campaignTitle);
+    expect(campaign.description).to.equal(campaignDescription);
+    expect(campaign.target).to.equal(campaignTarget);
+    expect(campaign.deadline).to.be.gt(0);
+    expect(campaign.image).to.equal(campaignImage);
+    expect(campaign.recievedAmount).to.equal(0);
+    expect(campaign.donorAddresses.length).to.equal(0);
+    expect(campaign.donationAmounts.length).to.equal(0);
+
+    // Donate to the campaign
+
+    await token.connect(addr1).approve(funding.address, campaignTarget);
+    await funding.connect(addr1).donate(0, 90);
+    await token.mint(addr2.address, 10);
+    await token.connect(addr2).approve(funding.address, campaignTarget);
+    await funding.connect(addr2).donate(0, 10);
+
+    //setTimeOut for 30 days
+    await ethers.provider.send("evm_increaseTime", [2593000]);
+    await ethers.provider.send("evm_mine");
+
+    await funding.connect(owner).withdrawl(0);
+
+    // Try to withdraw the funds
+    await expect(await token.balanceOf(owner.address)).to.equal(100);
+  });
+
+  it("should not withdraw the funds if the deadline has not passed", async function () {
+    const campaignTitle = "New Campaign";
+    const campaignDescription = "Campaign Description";
+    const campaignTarget = 100;
+    const campaignImage = "image.png";
+
+    // Create a new campaign
+    await funding.createCampaing(
+      campaignTitle,
+      campaignDescription,
+      campaignTarget,
+      campaignImage
+    );
+
+    // Get the campaign details
+    const campaign = await funding.getCampaign(0);
+
+    // Verify the campaign details
+    expect(campaign.owner).to.equal(owner.address);
+    expect(campaign.title).to.equal(campaignTitle);
+    expect(campaign.description).to.equal(campaignDescription);
+    expect(campaign.target).to.equal(campaignTarget);
+    expect(campaign.deadline).to.be.gt(0);
+    expect(campaign.image).to.equal(campaignImage);
+    expect(campaign.recievedAmount).to.equal(0);
+    expect(campaign.donorAddresses.length).to.equal(0);
+    expect(campaign.donationAmounts.length).to.equal(0);
+
+    // Donate to the campaign
+
+    await token.connect(addr1).approve(funding.address, campaignTarget);
+    await funding.connect(addr1).donate(0, 90);
+    await token.mint(addr2.address, 10);
+    await token.connect(addr2).approve(funding.address, campaignTarget);
+    await funding.connect(addr2).donate(0, 10);
+
+    // Try to withdraw the funds
+    await expect(funding.connect(owner).withdrawl(0)).to.be.reverted;
+  });
+
+  it("should not withdraw the funds if not the owner", async function () {
+    const campaignTitle = "New Campaign";
+    const campaignDescription = "Campaign Description";
+    const campaignTarget = 100;
+    const campaignImage = "image.png";
+
+    // Create a new campaign
+    await funding.createCampaing(
+      campaignTitle,
+      campaignDescription,
+      campaignTarget,
+      campaignImage
+    );
+
+    // Get the campaign details
+    const campaign = await funding.getCampaign(0);
+
+    // Verify the campaign details
+    expect(campaign.owner).to.equal(owner.address);
+    expect(campaign.title).to.equal(campaignTitle);
+    expect(campaign.description).to.equal(campaignDescription);
+    expect(campaign.target).to.equal(campaignTarget);
+    expect(campaign.deadline).to.be.gt(0);
+    expect(campaign.image).to.equal(campaignImage);
+    expect(campaign.recievedAmount).to.equal(0);
+    expect(campaign.donorAddresses.length).to.equal(0);
+    expect(campaign.donationAmounts.length).to.equal(0);
+
+    // Donate to the campaign
+
+    await token.connect(addr1).approve(funding.address, campaignTarget);
+    await funding.connect(addr1).donate(0, 90);
+    await token.mint(addr2.address, 10);
+    await token.connect(addr2).approve(funding.address, campaignTarget);
+    await funding.connect(addr2).donate(0, 10);
+
+    //setTimeOut for 30 days
+    await ethers.provider.send("evm_increaseTime", [2592000]);
+    await ethers.provider.send("evm_mine");
+
+    // Try to withdraw the funds
+    await expect(funding.connect(addr1).withdrawl(0)).to.be.reverted;
   });
 });
