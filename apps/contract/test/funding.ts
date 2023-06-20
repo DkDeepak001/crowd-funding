@@ -10,6 +10,7 @@ describe("Funding", function () {
   let owner: SignerWithAddress;
   let addr1: SignerWithAddress;
   let addr2: SignerWithAddress;
+  let addr3: SignerWithAddress;
   //   let tokenAddress: string = "0x30A320dE335c2c62eE5485AA4F06b63438b82754";
 
   beforeEach(async function () {
@@ -26,7 +27,7 @@ describe("Funding", function () {
 
     const FundingToken = await ethers.getContractFactory("Funding");
     funding = await FundingToken.deploy(tokenAddress);
-    [owner, addr1, addr2] = await ethers.getSigners();
+    [owner, addr1, addr2, addr3] = await ethers.getSigners();
   });
 
   it("should display the campagin count", async function () {
@@ -143,4 +144,44 @@ describe("Funding", function () {
   //   await token.connect(addr1).approve(funding.address, campaignTarget);
   //   await expect(funding.connect(addr1).donate(0, 20)).to.be.reverted;
   // });
+
+  it("should not donate to a campaign if the target has been reached", async function () {
+    const campaignTitle = "New Campaign";
+    const campaignDescription = "Campaign Description";
+    const campaignTarget = 100;
+    const campaignImage = "image.png";
+
+    // Create a new campaign
+    await funding.createCampaing(
+      campaignTitle,
+      campaignDescription,
+      campaignTarget,
+      campaignImage
+    );
+
+    // Get the campaign details
+    const campaign = await funding.getCampaign(0);
+
+    // Verify the campaign details
+    expect(campaign.owner).to.equal(owner.address);
+    expect(campaign.title).to.equal(campaignTitle);
+    expect(campaign.description).to.equal(campaignDescription);
+    expect(campaign.target).to.equal(campaignTarget);
+    expect(campaign.deadline).to.be.gt(0);
+    expect(campaign.image).to.equal(campaignImage);
+    expect(campaign.recievedAmount).to.equal(0);
+    expect(campaign.donorAddresses.length).to.equal(0);
+    expect(campaign.donationAmounts.length).to.equal(0);
+
+    // Donate to the campaign
+    await token.connect(addr1).approve(funding.address, campaignTarget);
+    await funding.connect(addr1).donate(0, 90);
+    await token.mint(addr2.address, 10);
+    await token.connect(addr2).approve(funding.address, campaignTarget);
+    await funding.connect(addr2).donate(0, 10);
+
+    // Try to donate to the campaign
+    await token.connect(addr2).approve(funding.address, campaignTarget);
+    await expect(funding.connect(addr2).donate(0, 20)).to.be.reverted;
+  });
 });

@@ -59,6 +59,7 @@ contract Funding {
     function donate(uint campaignId, uint amount) external payable{
         require(amount > 0, "Donation amount must be greater than 0");
         require(campaigns[campaignId].deadline >= block.timestamp, "Campaign has been closed");
+        require(campaigns[campaignId].recievedAmount + amount <= campaigns[campaignId].target, "Campaign target has been reached");
 
         // Transfer tokens from the donor to the contract
         require(tokenAddress.transferFrom(msg.sender, address(this), amount), "Token transfer failed");
