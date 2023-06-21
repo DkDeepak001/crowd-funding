@@ -7,13 +7,15 @@ const Header = () => {
   return (
     <div className="w-screen h-32  items-center flex flex-row px-20 justify-between">
       <div className="flex flex-row items-center gap-x-5">
-        <img
-          src="/logo.png"
-          alt="Logo"
-          width={200}
-          height={50}
-          className="object-contain -mt-5"
-        />
+        <Link href="/">
+          <img
+            src="/logo.png"
+            alt="Logo"
+            width={200}
+            height={50}
+            className="object-contain -mt-5"
+          />
+        </Link>
         <SearchBar />
       </div>
       <div className="flex flex-row items-center gap-x-14">
@@ -27,6 +29,7 @@ const Header = () => {
             Create Campaing{" "}
           </Link>
         </div>
+
         <ConnectWallet
           style={{ backgroundColor: "black", color: "white", fontSize: 12 }}
         />
