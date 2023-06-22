@@ -36,9 +36,6 @@ const CreateFunding: NextPage = () => {
       await create({
         args: [data.title, data.description, data.goal, data.image],
       });
-    } catch (error) {
-      console.log(error);
-    } finally {
       if (isSuccess) {
         alert("create success");
         setValue("title", "");
@@ -46,6 +43,8 @@ const CreateFunding: NextPage = () => {
         setValue("image", "");
         router.push("/");
       }
+    } catch (error) {
+      console.log(error);
     }
   });
 
@@ -112,7 +111,12 @@ const CreateFunding: NextPage = () => {
           <span className="text-red-500">{errors.image.message} </span>
         )}
 
-        <button type="submit">Create</button>
+        <button
+          type="submit"
+          className="bg-black text-white font-extrabold py-4 w-2/4 rounded-3xl self-center mt-3"
+        >
+          Create
+        </button>
       </form>
     </div>
   );
