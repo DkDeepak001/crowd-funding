@@ -1,5 +1,4 @@
 import {
-  Address,
   useAddress,
   useContractRead,
   useContractWrite,
@@ -9,8 +8,6 @@ import { BigNumber } from "ethers";
 import { type } from "os";
 import { format } from "date-fns";
 import { Progress } from "semantic-ui-react";
-import { useTokenContract } from "../hooks/useTokenContract";
-import { fundingAddress } from "../const/address";
 import { useState } from "react";
 
 type CardProps = {

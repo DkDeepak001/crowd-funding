@@ -1,4 +1,3 @@
-import Image from "next/image";
 import SearchBar from "./searchBar";
 import Link from "next/link";
 import { ConnectWallet } from "@thirdweb-dev/react";

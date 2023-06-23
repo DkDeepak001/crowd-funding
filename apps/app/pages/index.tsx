@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { useContractRead } from "@thirdweb-dev/react";
 import Card from "../components/card";
 import { Suspense } from "react";
-import { BigNumber } from "ethers";
 
 const Home: NextPage = () => {
   const router = useRouter();
