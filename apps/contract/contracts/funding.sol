@@ -62,6 +62,7 @@ contract Funding {
         require(campaigns[campaignId].recievedAmount + amount <= campaigns[campaignId].target, "Campaign target has been reached");
 
         // Transfer tokens from the donor to the contract
+        tokenAddress.allowance(msg.sender, address(this));
         require(tokenAddress.transferFrom(msg.sender, address(this), amount), "Token transfer failed");
 
         Campaign storage campaign = campaigns[campaignId];

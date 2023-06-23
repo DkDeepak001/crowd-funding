@@ -22,7 +22,9 @@ const MyFunding: NextPage = () => {
   );
 
   const handleMint = async () => {
+    if (!address) return alert("Please connect your wallet");
     try {
+      await contract?.erc20.allowance(address);
       await mint({ args: [address, 2] });
     } catch (error) {
       console.log(error);
