@@ -3,11 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useFundingContract } from "../hooks/useFundingContract";
-import {
-  useAddress,
-  useContractRead,
-  useContractWrite,
-} from "@thirdweb-dev/react";
+import { useAddress, useContractWrite } from "@thirdweb-dev/react";
 import { useRouter } from "next/router";
 
 const CreateFunding: NextPage = () => {
@@ -114,8 +110,9 @@ const CreateFunding: NextPage = () => {
         <button
           type="submit"
           className="bg-black text-white font-extrabold py-4 w-2/4 rounded-3xl self-center mt-3"
+          disabled={isCreating}
         >
-          Create
+          {isCreating ? "Creating..." : "Create"}
         </button>
       </form>
     </div>

@@ -22,6 +22,9 @@ const Home: NextPage = () => {
       <h1 className="text-4xl font-extrabold mb-8 text-center">
         All Campaings
       </h1>
+      {campaignsCounts?.length === 0 && (
+        <div className="text-xl font-bold text-black">No Campaing Found</div>
+      )}
       <div className="flex flex-row flex-wrap gap-5 items-center justify-center">
         {campaignsCounts?.map((item) => (
           <Suspense fallback={<div>Loading...</div>} key={item}>

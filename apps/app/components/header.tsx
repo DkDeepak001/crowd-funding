@@ -15,7 +15,6 @@ const Header = () => {
             className="object-contain -mt-5"
           />
         </Link>
-        <SearchBar />
       </div>
       <div className="flex flex-row items-center gap-x-14">
         <div className="flex flex-row items-center gap-x-7">
