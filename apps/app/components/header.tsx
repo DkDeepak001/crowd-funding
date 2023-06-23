@@ -20,9 +20,9 @@ const Header = () => {
       </div>
       <div className="flex flex-row items-center gap-x-14">
         <div className="flex flex-row items-center gap-x-7">
-          <Link href="/myFunding" className="text-sm font-bold text-black">
+          <Link href="/mintToken" className="text-sm font-bold text-black">
             {" "}
-            My Campaing{" "}
+            Mint Token{" "}
           </Link>
           <Link href="/createFunding" className="text-sm font-bold text-black">
             {" "}

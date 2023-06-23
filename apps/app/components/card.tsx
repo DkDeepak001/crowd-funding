@@ -50,7 +50,7 @@ const Card = ({ campaingId }: CardProps) => {
           </div>
         </div>
 
-        <Progress percent={0} size="small" success>
+        <Progress percent={percentage} size="small" success>
           <div className="absolute right-0 text-white">
             {Number(campaign.recievedAmount.toString())} /
             {Number(campaign.target.toString())}
